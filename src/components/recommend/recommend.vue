@@ -1,30 +1,32 @@
 <template>
   <div class="recommend">
-    <div class="recommend-content">
-      <div v-if="recommends.length" class="slider-wrapper">
-        <slider>
-          <div v-for="item in recommends">
-            <a :href="item.linkUrl">
-              <img :src="item.picUrl">
-            </a>
-          </div>
-        </slider>
-      </div>
-      <div class="recommend-list">
-        <h1 class="list-title">热门歌单推荐</h1>
-        <ul>
-          <li v-for="item in discList" class="item">
-            <div class="icon">
-              <img width="60" height="60" :src="item.imgurl">
+    <scroll ref="scroll" class="recommend-content" :data="discList">
+      <div>
+        <div v-if="recommends.length" class="slider-wrapper">
+          <slider>
+            <div v-for="item in recommends">
+              <a :href="item.linkUrl">
+                <img @load="loadImage" :src="item.picUrl">
+              </a>
             </div>
-            <div class="text">
-              <h2 class="name" v-html="item.creator.name"></h2>
-              <p class="desc" v-html="item.dissname"></p>
-            </div>
-          </li>
-        </ul>
+          </slider>
+        </div>
+        <div class="recommend-list">
+          <h1 class="list-title">热门歌单推荐</h1>
+          <ul>
+            <li v-for="item in discList" class="item">
+              <div class="icon">
+                <img width="60" height="60" :src="item.imgurl">
+              </div>
+              <div class="text">
+                <h2 class="name" v-html="item.creator.name"></h2>
+                <p class="desc" v-html="item.dissname"></p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </scroll>
   </div>
 </template>
 
@@ -32,6 +34,7 @@
   import {getRecommend, getDiscList} from 'api/recommend'
   import {ERR_OK} from 'api/config'
   import Slider from 'base/slider/slider'
+  import Scroll from 'base/scroll/scroll'
 
   export default {
     data() {
@@ -41,7 +44,8 @@
       }
     },
     components: {
-      Slider
+      Slider,
+      Scroll
     },
     created() {
       this._getRecommend()
@@ -61,6 +65,13 @@
             this.discList = res.data.list
           }
         })
+      },
+      loadImage() {
+        // 图片会加载多次 这里只需要执行一次 有图片撑开slider就ok了  所以加个限制
+        if (!this.checkLoad) {
+          this.$refs.scroll.refresh()
+          this.checkLoad = true
+        }
       }
     }
   }

@@ -44,13 +44,14 @@
         if (this.autoPlay) {
           this._play()
         }
-        window.addEventListener('resize', () => {
-          if (!this.slider) {
-            return
-          }
-          this._setSliderWidth(true)
-        })
       }, 20)
+      window.addEventListener('resize', () => {
+        if (!this.slider) {
+          return
+        }
+        this._setSliderWidth(true)
+        this.slider.refresh()
+      })
     },
     destroyed() {
       clearTimeout(this.timer)
