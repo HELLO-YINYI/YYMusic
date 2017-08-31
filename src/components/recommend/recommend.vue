@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="loading-container" v-show="!discList.length">
-        <loading title="亲~请耐心等待哟"></loading>
+        <loading title="亲~请耐心等待"></loading>
       </div>
     </scroll>
   </div>
